@@ -11,9 +11,9 @@ const highlights = [
 ];
 
 const stats = [
-  { value: '3rd Yr', label: 'Currently' },
+  { value: 'Intern', label: 'Currently' },
   { value: '2027', label: 'Graduation' },
-  { value: '5+', label: 'Projects Built' },
+  { value: '2', label: 'Projects Built' },
   { value: 'Full Stack', label: 'Focus Area' },
 ];
 

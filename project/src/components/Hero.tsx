@@ -204,7 +204,7 @@ export default function Hero() {
                 className="btn-secondary flex items-center gap-2"
               >
                 <Mail size={16} />
-                Contact Me
+                Socials
               </button>
               <button
                 onClick={() => window.open('/documents/Ciceron,_Keith_Czimonne_Anderson_RESUME_(3).pdf', '_blank')}
