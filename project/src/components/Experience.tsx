@@ -143,28 +143,7 @@ export default function Experience() {
           </div>
         </div>
 
-        {/* Education */}
-        <div className="mt-12 max-w-3xl mx-auto reveal">
-          <div className="glass rounded-2xl p-7 border border-crimson-DEFAULT/20">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-crimson-400" />
-                  <span className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Education</span>
-                </div>
-                <h3 className="text-xl font-bold text-white">BS Information Technology</h3>
-                <p className="text-neutral-400 mt-0.5">San Sebastian College Recoletos-Manila</p>
-                <p className="text-neutral-500 text-sm mt-1">Specialization: Full Stack Development & UI/UX Design</p>
-              </div>
-              <div className="text-right">
-                <span className="text-sm text-neutral-500 glass px-4 py-2 rounded-full border border-white/8">
-                  2022 — Present
-                </span>
-                <p className="text-crimson-400 text-xs mt-2 font-medium">Current Student</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Education removed — managed by fix script if needed */}
       </div>
     </section>
   );
