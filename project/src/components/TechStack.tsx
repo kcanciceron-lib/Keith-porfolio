@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import React from 'react';
+import { ScrollReveal } from './ScrollReveal';
 
 const HtmlIcon = () => (
   <svg viewBox="0 0 32 32" className="w-6 h-6" fill="none">
@@ -104,7 +105,21 @@ const FirebaseIcon = () => (
   </svg>
 );
 
-const categories = [
+interface TechItem {
+  name: string;
+  icon: React.ReactNode;
+  description?: string;
+}
+
+interface Category {
+  name: string;
+  colorClass: string;
+  borderColor: string;
+  bgColor: string;
+  techs: TechItem[];
+}
+
+const categories: Category[] = [
   {
     name: 'Frontend',
     colorClass: 'text-blue-400',
@@ -163,6 +178,17 @@ const categories = [
           <path d="M16 2a14 14 0 00-4.43 27.28c.7.13.95-.3.95-.67v-2.62c-3.89.85-4.71-1.87-4.71-1.87-.64-1.62-1.56-2.05-1.56-2.05-1.27-.87.1-.85.1-.85 1.4.1 2.14 1.44 2.14 1.44 1.25 2.14 3.27 1.52 4.07 1.16.13-.9.49-1.52.89-1.87-3.1-.35-6.37-1.56-6.37-6.93 0-1.53.55-2.78 1.44-3.76-.14-.35-.62-1.78.14-3.71 0 0 1.18-.38 3.85 1.44A13.4 13.4 0 0116 10.3c1.19.01 2.39.16 3.51.47 2.67-1.82 3.84-1.44 3.84-1.44.76 1.93.28 3.36.14 3.71.9.98 1.44 2.23 1.44 3.76 0 5.38-3.28 6.57-6.4 6.92.5.44.95 1.3.95 2.62v3.88c0 .38.25.81.96.67A14 14 0 0016 2z"/>
         </svg>
       )},
+      { name: 'Vercel', icon: (
+        <svg viewBox="0 0 24 24" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 22h20L12 2z" fill="white"/>
+        </svg>
+      ), description: 'Deployment' },
+      { name: 'Supabase', icon: (
+        <svg viewBox="0 0 24 24" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="4" fill="#3ECF8E"/>
+          <path d="M6 15c2-2 4-4 6-6s4 4 6 6" stroke="#fff" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+        </svg>
+      ), description: 'Backend' },
       { name: 'VS Code', icon: (
         <svg viewBox="0 0 32 32" className="w-6 h-6" fill="none">
           <path d="M23.7 4L12.5 14.5 7 9.5 4 11v10l3 1.5 5.5-5 11.2 10.5L28 25.5V6.5L23.7 4z" fill="#007ACC"/>
@@ -195,32 +221,13 @@ const categories = [
 ];
 
 export default function TechStack() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.reveal').forEach((el, i) => {
-              setTimeout(() => el.classList.add('visible'), i * 80);
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section id="tech" ref={sectionRef} className="section-padding relative overflow-hidden">
+    <section id="tech" className="section-padding relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-crimson-DEFAULT/20 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-background-secondary to-background-DEFAULT pointer-events-none" />
 
       <div className="container-max relative">
-        <div className="text-center mb-10 reveal">
+        <ScrollReveal className="text-center mb-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="font-pixel text-xs bg-crimson-DEFAULT/20 border-2 border-crimson-400 text-crimson-300 px-3 py-1.5 rounded-sm">
               ⚙️ Tech Stack
@@ -232,14 +239,14 @@ export default function TechStack() {
           <p className="text-neutral-400 mt-4 max-w-md mx-auto">
             A curated set of technologies I use to design, build, and ship quality products.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((cat, catIdx) => (
-            <div
+            <ScrollReveal
               key={cat.name}
-              className={`reveal glass rounded-sm p-6 border-2 ${cat.borderColor} hover:border-opacity-70 transition-all duration-300 group hover:-translate-y-1`}
-              style={{ transitionDelay: `${catIdx * 80}ms` }}
+              delay={catIdx * 0.1}
+              className={`glass rounded-sm p-6 border-2 ${cat.borderColor} hover:border-opacity-70 transition-all duration-300 group hover:-translate-y-1`}
             >
               <div className="flex items-center gap-3 mb-5">
                 <div className={`w-2 h-2 rounded-full ${cat.colorClass.replace('text-', 'bg-')}`} />
@@ -253,11 +260,16 @@ export default function TechStack() {
                     className={`flex items-center gap-2 px-3 py-2 rounded-sm border-2 ${cat.borderColor} ${cat.bgColor} transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 cursor-default`}
                   >
                     <span className="flex-shrink-0">{tech.icon}</span>
-                    <span className="text-neutral-300 text-xs font-pixel font-semibold">{tech.name}</span>
+                    <div className="text-left">
+                      <div className="text-neutral-300 text-xs font-pixel font-semibold">{tech.name}</div>
+                      {tech.description && (
+                        <div className="text-neutral-500 text-[11px]">{tech.description}</div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

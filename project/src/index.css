@@ -3,30 +3,77 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Swap out these asset URLs to change default and hover cursors easily */
+    --mario-star-cursor: url('/images/image_9eb486.png');
+    --mario-star-hover: url('/images/mario_star.gif');
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'Press Start 2P', monospace, sans-serif !important;
   }
 
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='17' viewBox='0 0 13 17'%3E%3Cpath d='M1 1L1 13L4 10L6 15L8.5 14L6.5 9L10 9Z' fill='white' stroke='black' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 1 1, auto;
+    cursor: var(--mario-star-cursor), auto !important;
   }
 
   body {
     background-color: #0a0a0a;
     color: #e4e4e7;
-    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-size: clamp(8px, 1.2vw, 11px);
+    line-height: 1.8;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='17' viewBox='0 0 13 17'%3E%3Cpath d='M1 1L1 13L4 10L6 15L8.5 14L6.5 9L10 9Z' fill='white' stroke='black' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 1 1, auto;
+    cursor: var(--mario-star-cursor), auto !important;
   }
 
-  a, button, [role="button"], input[type="submit"], input[type="button"], select {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='18' viewBox='0 0 14 18'%3E%3Crect x='5' y='0' width='3' height='7' rx='1' fill='white' stroke='black' stroke-width='1'/%3E%3Cpath d='M2 8Q2 7 4 7L4 13Q2 13 2 12Z' fill='white' stroke='black' stroke-width='1'/%3E%3Cpath d='M4 7L10 7L11 8L11 14Q11 16 7 16L4 16Q2 16 2 14L2 8Z' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E") 5 0, pointer;
+  a, button, [role="button"], input, textarea, select, .cursor-pointer, [type="submit"], [type="button"], label, summary {
+    cursor: var(--mario-star-hover), auto !important;
+  }
+
+  /* Add smooth transition to interactive elements */
+  a, button, [role="button"], input, textarea, select {
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  /* Fluid responsive typography clamp overrides to prevent clipping and overlaps */
+  h1, .text-4xl, .text-5xl, .text-6xl {
+    font-size: clamp(14px, 3.5vw, 32px) !important;
+    line-height: 1.5 !important;
+  }
+
+  h2, .text-3xl {
+    font-size: clamp(12px, 2.5vw, 22px) !important;
+    line-height: 1.5 !important;
+  }
+
+  h3, .text-2xl {
+    font-size: clamp(10px, 2vw, 16px) !important;
+    line-height: 1.6 !important;
+  }
+
+  h4, h5, h6, .text-xl, .text-lg {
+    font-size: clamp(9px, 1.8vw, 13px) !important;
+    line-height: 1.6 !important;
+  }
+
+  p, .text-base {
+    font-size: clamp(8px, 1.2vw, 11px) !important;
+    line-height: 1.8 !important;
+  }
+
+  .text-sm {
+    font-size: clamp(7.5px, 1vw, 9px) !important;
+  }
+
+  .text-xs {
+    font-size: clamp(7px, 0.9vw, 8px) !important;
   }
 
   ::selection {
@@ -35,7 +82,7 @@
   }
 
   ::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -44,7 +91,7 @@
 
   ::-webkit-scrollbar-thumb {
     background: #c41230;
-    border-radius: 2px;
+    border-radius: 0px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -54,25 +101,27 @@
 
 @layer components {
   .glass {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 10, 10, 0.85);
+    border: 3px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.4) !important;
+    image-rendering: pixelated;
   }
 
   .glass-strong {
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(10, 10, 10, 0.95);
+    border: 3px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.5) !important;
+    image-rendering: pixelated;
   }
 
   .glow-red {
-    box-shadow: 0 0 30px rgba(196, 18, 48, 0.25), 0 0 60px rgba(196, 18, 48, 0.1);
+    box-shadow: 0 0 15px rgba(196, 18, 48, 0.25);
   }
 
   .glow-red-sm {
-    box-shadow: 0 0 15px rgba(196, 18, 48, 0.2);
+    box-shadow: 0 0 8px rgba(196, 18, 48, 0.15);
   }
 
   .text-gradient {
@@ -90,7 +139,7 @@
   }
 
   .section-padding {
-    padding: 2rem 1rem;
+    padding: clamp(2rem, 5vw, 4rem) 1.5rem;
   }
 
   .container-max {
@@ -99,36 +148,43 @@
   }
 
   .btn-primary {
-    @apply relative overflow-hidden px-6 py-3 rounded-lg font-medium text-white transition-all duration-300;
-    background: linear-gradient(135deg, #c41230 0%, #8b0e22 100%);
-    box-shadow: 0 4px 20px rgba(196, 18, 48, 0.3);
+    @apply relative overflow-hidden px-6 py-3 font-medium text-white transition-all duration-200;
+    background: #c41230;
+    border: 3px solid #000 !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px #000 !important;
   }
 
   .btn-primary:hover {
-    box-shadow: 0 8px 30px rgba(196, 18, 48, 0.5);
-    transform: translateY(-2px);
+    background: #ffffff;
+    color: #c41230 !important;
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #000 !important;
   }
 
   .btn-primary:active {
-    transform: translateY(0px) scale(0.98);
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #000 !important;
   }
 
   .btn-secondary {
-    @apply relative px-6 py-3 rounded-lg font-medium text-white transition-all duration-300;
+    @apply relative px-6 py-3 font-medium text-white transition-all duration-200;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(10px);
+    border: 3px solid #ffffff !important;
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px rgba(255, 255, 255, 0.15) !important;
   }
 
   .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(196, 18, 48, 0.5);
-    box-shadow: 0 0 20px rgba(196, 18, 48, 0.15);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #c41230 !important;
+    box-shadow: 2px 2px 0px #c41230 !important;
+    transform: translate(2px, 2px);
   }
 
   .btn-secondary:active {
-    transform: translateY(0px) scale(0.98);
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #c41230 !important;
   }
 }
 
@@ -247,25 +303,192 @@
   transform: translateX(0);
 }
 
-/* Cursor glow */
+/* =====================================================
+   CURSOR GLOW EFFECT
+===================================================== */
 .cursor-glow {
-  pointer-events: none;
   position: fixed;
   width: 400px;
   height: 400px;
+  pointer-events: none;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(196, 18, 48, 0.06) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(196, 18, 48, 0.08) 0%,
+    rgba(196, 18, 48, 0.03) 40%,
+    transparent 75%
+  );
   transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
+  will-change: transform;
   z-index: 1;
 }
 
-/* Noise texture overlay */
-.noise-overlay {
+/* =====================================================
+   CUSTOM PIXEL CURSOR (The Codédex Retro Glove Hand)
+===================================================== */
+.custom-cursor {
   position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  top: 0;
+  left: 0;
+  width: 38px;
+  height: 38px;
   pointer-events: none;
-  z-index: 9999;
-  opacity: 0.4;
+  z-index: 99999;
+  
+  /* Critical parameters for crisp, unblurred rendering */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  
+  /* Accurate vector mapping of the detailed retro cursor hand glove */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 19 19' shape-rendering='crispEdges'%3E%3Cpath d='M3 1h3v1H3zm3 1h1v1H6zm1 1h1v1H7zm1 1h1v3H8zm1 3h3v1H9zm3 1h1v1h-1zm1 1h1v4h-1zm-1 4h1v1h-1zm-1 1h1v1h-1zm-1 1h1v1H8zm-3 1h3v1H5zm-3-1h3v1H2zm-1-1h1v1H1zm-1-1h1v1H0zm0-4h1v4H0zm1-1h1v1H1zm1-1h1v1H2zm1-1h1v1H3zm1-1h1v1H4zm1-3h1v2H5zm0-1h1v1H5zm-1 0h1v1H4zm-1 0h1v1H3zm0-1h1v1H3zm-1 0h1v1H2zm1-1h1v1H3zm1-1h1v1H4z' fill='%23000'/%3E%3Cpath d='M3 2h3v1H3zm3 1h1v1H6zm1 1h1v3H7zm1 3h4v1H8zm4 1h1v1h-1zm1 1h1v4h-1zm-1 4h1v1h-1zm-1 1h1v1h-1zm-1 1h1v1H8zm-3 1h3v1H5zm-2-1h2v1H3zm-1-1h1v1H2zm-1-4h1v3H1zm-1-1h1v1H0zm2-3h2v1H2zm2-3h1v2H4zm0-1h1v1H4zm-1 0h1v1H3zm-1 0h1v1H2z' fill='%23fff'/%3E%3Cpath d='M2 6h1v1H2zm1 1h1v1H3zm1 3h1v1H4zm7 4h1v1h-1zm-1 1h1v1h-1z' fill='%23888'/%3E%3C/svg%3E");
+
+  will-change: transform;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  opacity: 1;
+  transition: 
+    filter 0.12s ease, 
+    opacity 0.12s ease,
+    transform 0.04s ease-out;
+}
+
+/* =====================================================
+   INTERACTION STATES
+===================================================== */
+.custom-cursor--hover {
+  filter: drop-shadow(0 0 8px rgba(196, 18, 48, 0.6)) brightness(1.1);
+}
+
+.custom-cursor--click {
+  transform: scale(0.92);
+  filter: brightness(0.85);
+}
+
+/* =====================================================
+   MOBILE FALLBACK
+===================================================== */
+@media (pointer: coarse) {
+  .custom-cursor,
+  .cursor-glow {
+    display: none !important;
+  }
+  html,
+  body,
+  button,
+  a,
+  input,
+  textarea,
+  select,
+  [role="button"] {
+    cursor: auto !important;
+  }
+}
+
+/* =====================================================
+   RETRO PIXEL BUTTONS (SOLID RETRO BLOCK SHADOWS)
+   ===================================================== */
+.pixel-btn-retro {
+  position: relative;
+  image-rendering: pixelated;
+  border: 3px solid #000 !important;
+  background-color: #c41230;
+  color: #fff;
+  box-shadow: 4px 4px 0 #000 !important;
+  transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s, color 0.2s;
+  font-family: 'Press Start 2P', monospace !important;
+}
+.pixel-btn-retro:hover {
+  background-color: #fff;
+  color: #c41230;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000 !important;
+}
+.pixel-btn-retro:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0 #000 !important;
+}
+
+/* =====================================================
+   SPACE MODE CYBER RETRO THEME
+   ===================================================== */
+.theme-space {
+  background-image: url('/images/d463f24b0e1f3f1ce6680d601c97e6a0.gif') !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+}
+
+.theme-space .glass {
+  background: rgba(13, 2, 28, 0.9) !important;
+  border: 3px solid #ff007f !important;
+  border-radius: 0px !important;
+  box-shadow: 4px 4px 0px #7b00ff !important;
+}
+
+.theme-space .glass-strong {
+  background: rgba(13, 2, 28, 0.95) !important;
+  border: 3px solid #00f0ff !important;
+  border-radius: 0px !important;
+  box-shadow: 6px 6px 0px #ff007f !important;
+}
+
+.theme-space .pixel-badge {
+  border-color: #00f0ff !important;
+  color: #00f0ff !important;
+  background-color: rgba(0, 240, 255, 0.1) !important;
+  box-shadow: 4px 4px 0px rgba(0, 240, 255, 0.15) !important;
+  border-radius: 0px !important;
+}
+
+.theme-space .text-gradient-red {
+  background: linear-gradient(135deg, #ff007f 0%, #7b00ff 50%, #00f0ff 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.theme-space .btn-primary,
+.theme-space .pixel-btn.bg-crimson-DEFAULT,
+.theme-space .pixel-btn-retro {
+  background: #ff007f !important;
+  color: #fff !important;
+  border: 3px solid #00f0ff !important;
+  border-radius: 0px !important;
+  box-shadow: 4px 4px 0px #7b00ff !important;
+}
+
+.theme-space .btn-primary:hover,
+.theme-space .pixel-btn.bg-crimson-DEFAULT:hover,
+.theme-space .pixel-btn-retro:hover {
+  background: #00f0ff !important;
+  color: #0d021c !important;
+  border-color: #ff007f !important;
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px #7b00ff !important;
+}
+
+.theme-space .btn-secondary {
+  background: rgba(13, 2, 28, 0.6) !important;
+  border: 3px solid #7b00ff !important;
+  border-radius: 0px !important;
+  box-shadow: 4px 4px 0px #ff007f !important;
+}
+
+.theme-space .btn-secondary:hover {
+  background: #7b00ff !important;
+  color: #fff !important;
+  border-color: #00f0ff !important;
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px #ff007f !important;
+}
+
+.theme-space::-webkit-scrollbar-thumb {
+  background: #ff007f !important;
+}
+.theme-space::-webkit-scrollbar-thumb:hover {
+  background: #00f0ff !important;
 }

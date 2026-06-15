@@ -1,7 +1,22 @@
-import { useEffect, useRef } from 'react';
-import { ExternalLink, ArrowRight, Sparkles } from 'lucide-react';
+import { ExternalLink, ArrowRight, Sparkles, Github } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
-const projects = [
+interface Project {
+  id: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  tags: string[];
+  features: string[];
+  liveUrl: string | null;
+  githubUrl: string | null;
+  badge: string | null;
+  accent: string;
+  borderColor: string;
+}
+
+const projects: Project[] = [
   {
     id: 1,
     title: 'SSCRecoletos Connect',
@@ -12,6 +27,7 @@ const projects = [
     tags: ['HTML', 'CSS', 'JavaScript', 'MySQL', 'Responsive Design'],
     features: ['User feedback collection', 'Survey analytics dashboard', 'Response management', 'Satisfaction reporting'],
     liveUrl: 'http://connect-outreach-joy.lovable.app/',
+    githubUrl: null,
     badge: null,
     accent: '#3b82f6',
     borderColor: 'border-blue-500/30',
@@ -26,39 +42,21 @@ const projects = [
     tags: ['Full Stack', 'MySQL', 'JavaScript', 'UI/UX Design', 'Database Management'],
     features: ['Book catalog management', 'Online search & filtering', 'Student borrowing records', 'Admin dashboard & analytics'],
     liveUrl: null,
-    badge: 'Capstone Project',
+    githubUrl: null,
+    badge: 'Software Engineering Project',
     accent: '#c41230',
     borderColor: 'border-crimson-DEFAULT/30',
   },
 ];
 
 export default function Projects() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.reveal').forEach((el, i) => {
-              setTimeout(() => el.classList.add('visible'), i * 120);
-            });
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section id="projects" ref={sectionRef} className="section-padding relative overflow-hidden">
+    <section id="projects" className="section-padding relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="absolute -right-40 top-20 w-96 h-96 rounded-full bg-crimson-DEFAULT opacity-5 blur-3xl pointer-events-none" />
 
       <div className="container-max px-6">
-        <div className="text-center mb-10 reveal">
+        <ScrollReveal className="text-center mb-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="font-pixel text-xs bg-crimson-DEFAULT/20 border-2 border-crimson-400 text-crimson-300 px-3 py-1.5 rounded-sm">
               ✨ Featured Projects
@@ -71,14 +69,15 @@ export default function Projects() {
             <Sparkles size={14} className="text-crimson-400" />
             Real projects built during my academic journey
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="flex flex-col gap-8">
           {projects.map((project, idx) => (
-            <div
+            <ScrollReveal
               key={project.id}
-              className={`reveal group relative rounded-sm border-2 overflow-hidden transition-all duration-500 hover:-translate-y-1 ${project.borderColor}`}
-              style={{ background: '#111111', transitionDelay: `${idx * 100}ms` }}
+              direction={idx % 2 === 0 ? 'left' : 'right'}
+              className={`group relative rounded-sm border-2 overflow-hidden transition-all duration-500 hover:-translate-y-1 ${project.borderColor}`}
+              style={{ background: '#111111' }}
             >
               <div className="relative grid lg:grid-cols-2 gap-0">
                 {/* Image side */}
@@ -87,10 +86,11 @@ export default function Projects() {
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 brightness-[0.55] saturate-[0.8]"
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 brightness-[0.7] saturate-[0.9]"
                     />
                     {/* Strong dark overlay covering the full image */}
-                    <div className="absolute inset-0 bg-black/30" />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
                     {/* Directional fade toward content */}
                     <div
                       className={`absolute inset-0 hidden lg:block ${
@@ -104,7 +104,7 @@ export default function Projects() {
 
                   {project.badge && (
                     <div className="absolute top-4 left-4">
-                      <div className="flex items-center gap-1.5 bg-crimson-DEFAULT backdrop-blur-sm text-white text-xs font-pixel font-semibold px-3 py-1.5 rounded-sm border-2 border-crimson-300/60">
+                      <div className="flex items-center gap-1.5 bg-crimson-DEFAULT backdrop-blur-sm text-white text-[10px] font-pixel font-semibold px-3 py-1.5 rounded-sm border-2 border-crimson-300/60 shadow-lg">
                         <span>⭐</span>
                         {project.badge}
                       </div>
@@ -119,20 +119,20 @@ export default function Projects() {
                   }`}
                 >
                   <div
-                    className="inline-block self-start font-pixel text-xs px-2.5 py-1 rounded-sm border-2 mb-3"
+                    className="inline-block self-start font-pixel text-[10px] px-2.5 py-1 rounded-sm border-2 mb-3"
                     style={{ borderColor: `${project.accent}60`, color: project.accent, background: `${project.accent}15` }}
                   >
                     {project.subtitle}
                   </div>
 
-                  <h3 className="text-xl lg:text-2xl font-bold text-white mb-3">{project.title}</h3>
+                  <h3 className="text-xl lg:text-2xl font-bold text-white mb-3 tracking-tight">{project.title}</h3>
                   <p className="text-neutral-300 text-sm leading-relaxed mb-5">{project.description}</p>
 
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mb-5">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-6">
                     {project.features.map(f => (
-                      <li key={f} className="flex items-center gap-2 text-neutral-300 text-xs">
+                      <li key={f} className="flex items-start gap-2 text-neutral-400 text-xs">
                         <div
-                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
                           style={{ background: project.accent }}
                         />
                         {f}
@@ -140,32 +140,49 @@ export default function Projects() {
                     ))}
                   </ul>
 
-                  <div className="flex flex-wrap gap-1.5 mb-5">
+                  <div className="flex flex-wrap gap-2 mb-6">
                     {project.tags.map(tag => (
                       <span
                         key={tag}
-                        className="text-xs font-pixel px-2.5 py-1 rounded-sm border-2 border-white/10 bg-white/5 text-neutral-300"
+                        className="text-[10px] font-pixel px-2 py-1 rounded-sm border border-white/10 bg-white/5 text-neutral-400 hover:text-white hover:border-white/20 transition-colors"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="self-start btn-primary flex items-center gap-2 text-sm"
-                    >
-                      <ExternalLink size={14} />
-                      Live Demo
-                      <ArrowRight size={14} />
-                    </a>
-                  )}
+                  <div className="flex flex-wrap gap-3">
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-primary flex items-center gap-2 text-xs px-4 py-2"
+                      >
+                        <ExternalLink size={14} />
+                        Live Demo
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-secondary flex items-center gap-2 text-xs px-4 py-2"
+                      >
+                        <Github size={14} />
+                        GitHub
+                      </a>
+                    )}
+                    {!project.liveUrl && !project.githubUrl && (
+                      <div className="text-neutral-500 text-xs font-pixel italic">
+                        Private Institutional Project
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
 import { Code2, Palette, TestTube, Lightbulb, Camera, Video } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 const highlights = [
   { icon: Code2, label: 'Full Stack Development', desc: 'End-to-end web solutions' },
@@ -18,34 +18,15 @@ const stats = [
 ];
 
 export default function About() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach((el, i) => {
-              setTimeout(() => el.classList.add('visible'), i * 100);
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section id="about" ref={sectionRef} className="section-padding relative overflow-hidden">
+    <section id="about" className="section-padding relative overflow-hidden">
       {/* Background accent */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-crimson-DEFAULT/30 to-transparent" />
       <div className="absolute -left-40 top-20 w-80 h-80 rounded-full bg-crimson-DEFAULT opacity-5 blur-3xl pointer-events-none" />
 
       <div className="container-max">
         {/* Header */}
-        <div className="text-center mb-10 reveal">
+        <ScrollReveal className="text-center mb-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-8 bg-crimson-DEFAULT" />
             <span className="text-crimson-400 text-sm font-medium tracking-widest uppercase">About Me</span>
@@ -54,11 +35,11 @@ export default function About() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
             Who I <span className="text-gradient-red">Am</span>
           </h2>
-        </div>
+        </ScrollReveal>
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left — Bio */}
-          <div className="reveal-left">
+          <ScrollReveal direction="left">
             <div className="glass rounded-2xl p-8 border border-white/8 mb-6">
               <div className="inline-flex items-center gap-2 bg-crimson-DEFAULT/10 border-2 border-crimson-400 rounded-sm px-3 py-1.5 mb-4">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
@@ -79,16 +60,16 @@ export default function About() {
             {/* Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {stats.map((stat) => (
-                <div key={stat.label} className="glass rounded-xl p-4 border border-white/8 text-center hover:border-crimson-DEFAULT/30 transition-all duration-300 group">
-                  <p className="text-2xl font-bold text-white group-hover:text-crimson-400 transition-colors duration-300">{stat.value}</p>
-                  <p className="text-neutral-500 text-xs mt-1 leading-tight">{stat.label}</p>
+                <div key={stat.label} className="glass p-4 border border-white/8 flex flex-col justify-between items-center gap-2.5 text-center hover:border-crimson-DEFAULT/30 transition-all duration-300 group min-h-[90px]" style={{ borderRadius: '0px' }}>
+                  <p className="text-[9px] md:text-[10px] font-bold text-white group-hover:text-crimson-400 transition-colors duration-300 leading-normal uppercase break-words w-full">{stat.value}</p>
+                  <p className="text-neutral-500 text-[7px] tracking-wider uppercase leading-snug">{stat.label}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Right — Skill highlights */}
-          <div className="reveal-right">
+          <ScrollReveal direction="right">
             <h3 className="text-lg font-semibold text-white mb-6">What I bring to the table</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {highlights.map((item, i) => {
@@ -112,7 +93,7 @@ export default function About() {
                 );
               })}
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

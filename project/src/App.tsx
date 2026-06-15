@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Stats from './components/Stats';
@@ -11,35 +10,35 @@ import OJT from './components/OJT';
 import CallToAction from './components/CallToAction';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import CustomCursor from './components/CustomCursor';
+import BackgroundCanvas from './components/BackgroundCanvas';
+import { useTheme } from './context/ThemeContext';
 
 export default function App() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.left = `${e.clientX}px`;
-        cursorRef.current.style.top = `${e.clientY}px`;
-      }
-    };
-    window.addEventListener('mousemove', onMouseMove);
-    return () => window.removeEventListener('mousemove', onMouseMove);
-  }, []);
+  const { mode } = useTheme();
 
   return (
-    <div className="relative min-h-screen bg-background-DEFAULT text-white overflow-x-hidden">
-      {/* Cursor glow */}
+    <div className={`relative min-h-screen overflow-x-hidden bg-neutral-950 text-white selection:bg-red-500/30 transition-colors duration-500 ${mode === 'space' ? 'theme-space' : ''}`}>
+      
+      {/* Background Layer */}
+      <div className="fixed inset-0 -z-10">
+        <BackgroundCanvas />
+      </div>
+
+      {/* Cursor Layer */}
+      <CustomCursor />
+
+      {/* Noise Overlay */}
       <div
-        ref={cursorRef}
-        className="cursor-glow hidden lg:block"
+        className="noise-overlay fixed inset-0 pointer-events-none z-40"
         aria-hidden="true"
       />
 
-      {/* Noise overlay */}
-      <div className="noise-overlay" aria-hidden="true" />
-
+      {/* Navbar */}
       <Navbar />
-      <main>
+
+      {/* Main Content */}
+      <main className="relative z-10">
         <Hero />
         <Stats />
         <About />
@@ -51,6 +50,8 @@ export default function App() {
         <CallToAction />
         <Contact />
       </main>
+
+      {/* Footer */}
       <Footer />
     </div>
   );

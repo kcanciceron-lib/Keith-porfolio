@@ -1,202 +1,246 @@
-import { useEffect, useRef, useState } from 'react';
-import { Mail, Phone, Github, Linkedin, ArrowRight, Send, CheckCircle, FileText } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { useState } from 'react';
+import { Send, CheckCircle, FileText } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { ScrollReveal } from './ScrollReveal';
+import { useTheme } from '../context/ThemeContext';
 
-const contactInfo = [
-  {
-    icon: Mail,
-    label: 'Email',
-    value: 'ciceronkeith4@gmail.com',
-    href: 'mailto:ciceronkeith4@gmail.com',
-    color: 'text-blue-400',
-    borderColor: 'border-blue-500/20 hover:border-blue-500/40',
-    bg: 'bg-blue-500/10',
-  },
-  {
-    icon: Phone,
-    label: 'Phone',
-    value: '09944933136',
-    href: 'tel:09944933136',
-    color: 'text-green-400',
-    borderColor: 'border-green-500/20 hover:border-green-500/40',
-    bg: 'bg-green-500/10',
-  },
-  {
-    icon: Github,
-    label: 'GitHub',
-    value: 'github.com/keith',
-    href: 'https://github.com',
-    color: 'text-neutral-300',
-    borderColor: 'border-white/10 hover:border-white/25',
-    bg: 'bg-white/5',
-  },
-  {
-    icon: Linkedin,
-    label: 'LinkedIn',
-    value: 'linkedin.com/in/keith',
-    href: 'https://linkedin.com',
-    color: 'text-sky-400',
-    borderColor: 'border-sky-500/20 hover:border-sky-500/40',
-    bg: 'bg-sky-500/10',
-  },
-];
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
 
 export default function Contact() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const { addMessage } = useTheme();
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    message: '',
+  });
+
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach((el, i) => {
-              setTimeout(() => el.classList.add('visible'), i * 100);
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      email: '',
+      message: '',
+    });
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setSending(true);
     setError('');
 
-    const { error: sbError } = await supabase
-      .from('contact_messages')
-      .insert({ name: formData.name, email: formData.email, message: formData.message });
+    // Save message locally (Easter Egg storage)
+    addMessage({
+      name: formData.name,
+      email: formData.email,
+      message: formData.message,
+    });
 
-    setSending(false);
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const { error: supabaseError } = await supabase
+          .from('contact_messages')
+          .insert([
+            {
+              name: formData.name,
+              email: formData.email,
+              message: formData.message,
+            },
+          ]);
 
-    if (sbError) {
-      setError('Something went wrong. Please try again.');
-      return;
+        if (supabaseError) {
+          throw new Error(supabaseError.message);
+        }
+
+        setSent(true);
+        resetForm();
+
+        setTimeout(() => {
+          setSent(false);
+        }, 5000);
+
+        return;
+      }
+
+      const endpoint =
+        import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact';
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || 'Failed to send message.');
+      }
+
+      setSent(true);
+      resetForm();
+
+      setTimeout(() => {
+        setSent(false);
+      }, 5000);
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'An unexpected error occurred.'
+      );
+    } finally {
+      setSending(false);
     }
-
-    setSent(true);
-    setTimeout(() => setSent(false), 5000);
-    setFormData({ name: '', email: '', message: '' });
   };
 
   return (
-    <section id="contact" ref={sectionRef} className="py-12 sm:py-16 relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-crimson-DEFAULT/30 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background-DEFAULT to-background-secondary pointer-events-none" />
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-96 h-96 rounded-full bg-crimson-DEFAULT opacity-5 blur-3xl pointer-events-none" />
-
-      <div className="container-max relative px-6">
-        <div className="text-center mb-10 reveal">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <span className="font-pixel text-xs bg-crimson-DEFAULT/20 border-2 border-crimson-400 text-crimson-300 px-3 py-1 rounded-sm">
-              💬 Let's Connect
-            </span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
-            Let's Build Something <span className="text-gradient-red">Great Together</span>
+    <section
+      id="contact"
+      className="py-20 border-b border-white/5 bg-black/10"
+    >
+      <div className="container-max px-6">
+        <ScrollReveal className="text-center mb-12">
+          <h2 className="text-3xl font-bold tracking-tight font-pixel text-white">
+            Get In <span className="text-crimson-DEFAULT">Touch</span>
           </h2>
-          <p className="text-neutral-400 mt-3 max-w-lg mx-auto text-sm">
-            Have a project in mind, a role to fill, or just want to connect? I'd love to hear from you.
+
+          <p className="text-neutral-400 mt-3 max-w-md mx-auto">
+            Have an open opportunity, a project proposal, or just want to chat?
+            Drop a message!
           </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Left — contact cards */}
-          <div className="reveal-left">
-            <p className="text-neutral-400 text-xs font-pixel mb-4 uppercase tracking-wide">Reach out directly</p>
-            <div className="grid gap-3">
-              {contactInfo.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target={item.href.startsWith('http') ? '_blank' : undefined}
-                    rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className={`glass rounded-sm p-4 border-2 ${item.borderColor} flex items-center gap-4 transition-all duration-300 group hover:-translate-y-0.5`}
-                  >
-                    <div className={`w-10 h-10 rounded-sm ${item.bg} flex items-center justify-center flex-shrink-0`}>
-                      <Icon size={18} className={item.color} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-neutral-500 text-xs font-pixel uppercase tracking-wide">{item.label}</p>
-                      <p className="text-white font-medium text-sm mt-0.5 truncate">{item.value}</p>
-                    </div>
-                    <ArrowRight size={14} className="text-neutral-600 group-hover:text-neutral-300 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Right — form */}
-          <div className="reveal-right">
-            <p className="text-neutral-400 text-xs font-pixel mb-4 uppercase tracking-wide">Send a message</p>
-            <div className="glass rounded-sm p-6 border-2 border-white/8">
+        <div className="max-w-xl mx-auto">
+          <ScrollReveal className="glass rounded-sm border-2 border-white/10 p-6 sm:p-8 relative overflow-hidden">
+            <div>
               {sent ? (
-                <div className="flex flex-col items-center justify-center py-10 gap-3">
-                  <div className="w-12 h-12 rounded-sm bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center">
-                    <CheckCircle size={24} className="text-green-400" />
-                  </div>
-                  <p className="text-white font-semibold font-pixel text-sm">✦ Message Sent!</p>
-                  <p className="text-neutral-400 text-xs text-center">Thanks for reaching out. I'll get back to you soon.</p>
+                <div className="text-center py-8 space-y-3 animate-fade-in">
+                  <CheckCircle
+                    size={48}
+                    className="text-emerald-400 mx-auto"
+                  />
+
+                  <h3 className="text-xl font-bold text-white">
+                    Message Transmitted!
+                  </h3>
+
+                  <p className="text-neutral-400 text-sm">
+                    Thank you for reaching out. I will get back to you as soon
+                    as possible.
+                  </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-neutral-400 text-xs mb-1.5 font-pixel">Your Name</label>
+                    <label
+                      htmlFor="name"
+                      className="block text-xs font-pixel text-neutral-400 mb-2"
+                    >
+                      NAME
+                    </label>
+
                     <input
+                      id="name"
                       type="text"
                       required
                       value={formData.name}
-                      onChange={e => setFormData(d => ({ ...d, name: e.target.value }))}
-                      placeholder="John Doe"
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                      placeholder="Your Name"
                       className="w-full bg-white/5 border-2 border-white/10 rounded-sm px-4 py-2.5 text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-crimson-DEFAULT/60 transition-all duration-200"
                     />
                   </div>
+
                   <div>
-                    <label className="block text-neutral-400 text-xs mb-1.5 font-pixel">Email Address</label>
+                    <label
+                      htmlFor="email"
+                      className="block text-xs font-pixel text-neutral-400 mb-2"
+                    >
+                      EMAIL ADDRESS
+                    </label>
+
                     <input
+                      id="email"
                       type="email"
                       required
                       value={formData.email}
-                      onChange={e => setFormData(d => ({ ...d, email: e.target.value }))}
-                      placeholder="john@example.com"
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
+                      placeholder="you@example.com"
                       className="w-full bg-white/5 border-2 border-white/10 rounded-sm px-4 py-2.5 text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-crimson-DEFAULT/60 transition-all duration-200"
                     />
                   </div>
+
                   <div>
-                    <label className="block text-neutral-400 text-xs mb-1.5 font-pixel">Message</label>
+                    <label
+                      htmlFor="message"
+                      className="block text-xs font-pixel text-neutral-400 mb-2"
+                    >
+                      MESSAGE
+                    </label>
+
                     <textarea
+                      id="message"
+                      rows={5}
                       required
-                      rows={4}
                       value={formData.message}
-                      onChange={e => setFormData(d => ({ ...d, message: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          message: e.target.value,
+                        }))
+                      }
                       placeholder="Tell me about your project or opportunity..."
                       className="w-full bg-white/5 border-2 border-white/10 rounded-sm px-4 py-2.5 text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-crimson-DEFAULT/60 transition-all duration-200 resize-none"
                     />
                   </div>
-                  {error && <p className="text-red-400 text-xs font-pixel">{error}</p>}
-                  <div className="flex gap-3">
+
+                  {error && (
+                    <p className="text-red-400 text-xs font-mono">
+                      {error}
+                    </p>
+                  )}
+
+                  <div className="flex gap-3 pt-2">
                     <button
                       type="submit"
                       disabled={sending}
-                      className="btn-primary flex items-center justify-center gap-2 flex-1 disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="pixel-btn bg-crimson-DEFAULT text-white px-6 py-2.5 rounded-sm font-bold flex-1 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed hover:bg-crimson-600 transition-colors"
                     >
                       <Send size={14} />
+
                       {sending ? 'Sending...' : 'Send Message'}
                     </button>
+
                     <button
                       type="button"
-                      onClick={() => window.open('/documents/Ciceron,_Keith_Czimonne_Anderson_RESUME_(3).pdf', '_blank')}
-                      className="btn-secondary flex items-center justify-center gap-2 px-4"
+                      onClick={() =>
+                        window.open(
+                          '/documents/Ciceron,_Keith_Czimonne_Anderson_RESUME_(3).pdf',
+                          '_blank',
+                          'noopener,noreferrer'
+                        )
+                      }
+                      className="pixel-btn border border-white/20 bg-transparent text-white px-4 py-2.5 rounded-sm hover:bg-white/5 transition-colors flex items-center justify-center"
                       title="View Resume"
                     >
                       <FileText size={14} />
@@ -205,7 +249,7 @@ export default function Contact() {
                 </form>
               )}
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

@@ -87,7 +87,6 @@ export default function Experience() {
 
           <div className="flex flex-col gap-8">
             {experiences.map((exp, idx) => {
-              const Icon = exp.icon;
               return (
                 <div
                   key={exp.id}

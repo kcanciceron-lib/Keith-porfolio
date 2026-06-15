@@ -4,9 +4,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
-        inter: ['Inter', 'system-ui', 'sans-serif'],
-        pixel: ['Pixelify Sans', 'monospace'],
+        sans: ['Press Start 2P', 'Pixelify Sans', 'system-ui', 'sans-serif'],
+        inter: ['Pixelify Sans', 'system-ui', 'sans-serif'],
+        pixel: ['Press Start 2P', 'monospace'],
       },
       colors: {
         background: {

@@ -1,13 +1,15 @@
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function CallToAction() {
+  // 👇 COMMENT: CallToAction wrapper — reduced padding for tighter spacing below OJT.
+  // Adjust the `p-8 lg:p-12` values inside the glass card to increase/decrease the vertical gap.
   return (
     <section className="section-padding relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-crimson-DEFAULT/5 via-transparent to-transparent pointer-events-none" />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-crimson-DEFAULT opacity-5 blur-3xl pointer-events-none" />
 
       <div className="container-max px-6 relative">
-        <div className="glass rounded-3xl border border-white/10 p-12 lg:p-16 text-center max-w-2xl mx-auto reveal">
+        <div className="glass rounded-3xl border border-white/10 p-8 lg:p-12 text-center max-w-2xl mx-auto reveal">
           <div className="flex items-center justify-center gap-3 mb-6">
             <span className="font-pixel text-xs bg-crimson-DEFAULT/20 border-2 border-crimson-400 text-crimson-300 px-3 py-1.5 rounded-sm">
               ✨ Let's Build Something
@@ -24,7 +26,12 @@ export default function CallToAction() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => {
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                  (document.getElementById('message') as HTMLTextAreaElement | null)?.focus();
+                }, 600);
+              }}
               className="btn-primary flex items-center justify-center gap-2 text-base px-8 py-4 rounded-xl font-semibold"
             >
               Get In Touch

@@ -1,12 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, Github, Linkedin, Mail, FileText, Folder } from 'lucide-react';
+import { ArrowDown, FileText, Folder } from 'lucide-react';
 import ContactModal from './ContactModal';
+import { useTheme } from '../context/ThemeContext';
+import { 
+  LinkedInPixelIcon, 
+  GitHubPixelIcon, 
+  MailPixelIcon,
+  FacebookPixelIcon,
+  InstagramPixelIcon,
+  TikTokPixelIcon,
+  PhonePixelIcon
+} from './PixelIcons';
+
+const socialOutlets = [
+  { name: 'Facebook', href: 'https://www.facebook.com/keith.ciceron', icon: FacebookPixelIcon, borderHover: 'hover:border-blue-500/50' },
+  { name: 'Instagram', href: 'https://www.instagram.com/mon.czii', icon: InstagramPixelIcon, borderHover: 'hover:border-pink-500/50' },
+  { name: 'TikTok', href: 'https://www.tiktok.com/@keith_ciceron', icon: TikTokPixelIcon, borderHover: 'hover:border-neutral-500/50' },
+  { name: 'Gmail', href: 'mailto:ciceronkeith4@gmail.com', icon: MailPixelIcon, borderHover: 'hover:border-red-500/50' },
+  { name: 'GitHub', href: 'https://github.com/keith-ciceron', icon: GitHubPixelIcon, borderHover: 'hover:border-purple-500/50' },
+  { name: 'LinkedIn', href: 'https://linkedin.com/in/keith-ciceron', icon: LinkedInPixelIcon, borderHover: 'hover:border-blue-400/50' },
+  { name: 'Phone', href: 'tel:+639682544293', icon: PhonePixelIcon, borderHover: 'hover:border-green-500/50' },
+];
 
 const PROFILE_IMAGE = '/images/me.jpg';
 
 const roles = ['Full Stack Developer', 'UI/UX Designer', 'Web Developer', 'Problem Solver'];
 
 export default function Hero() {
+  const { accentColor } = useTheme();
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [deleting, setDeleting] = useState(false);
@@ -79,7 +100,7 @@ export default function Hero() {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(196, 18, 48, ${p.alpha})`;
+        ctx.fillStyle = accentColor + '66';
         ctx.fill();
       });
 
@@ -93,7 +114,7 @@ export default function Hero() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(196, 18, 48, ${0.06 * (1 - dist / 120)})`;
+            ctx.strokeStyle = accentColor + '10';
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -108,7 +129,7 @@ export default function Hero() {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
     };
-  }, []);
+  }, [accentColor]);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
@@ -129,22 +150,22 @@ export default function Hero() {
       />
 
       {/* Gradient orbs */}
-      <div className="absolute top-20 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl bg-crimson-DEFAULT animate-float-slow pointer-events-none z-0" />
-      <div className="absolute bottom-20 right-1/4 w-80 h-80 rounded-full opacity-8 blur-3xl bg-crimson-deep animate-float pointer-events-none z-0" />
+      <div className="absolute top-20 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl animate-float-slow pointer-events-none z-0" style={{ backgroundColor: accentColor }} />
+      <div className="absolute bottom-20 right-1/4 w-80 h-80 rounded-full opacity-8 blur-3xl animate-float pointer-events-none z-0" style={{ backgroundColor: accentColor }} />
 
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background-DEFAULT to-transparent z-10 pointer-events-none" />
 
       <div className="container-max px-6 w-full relative z-10">
-        <div className="grid lg:grid-cols-2 gap-10 items-center min-h-screen py-16">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-10 items-center min-h-screen py-24 lg:py-16">
 
           {/* Left — Text */}
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-3 opacity-0 animate-slide-up" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-              <div className="h-px w-8 bg-crimson-DEFAULT" />
+              <div className="h-px w-8" style={{ backgroundColor: accentColor }} />
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-crimson-400 text-sm font-medium tracking-widest uppercase">Available for work</span>
+                <span className="text-sm font-medium tracking-widest uppercase" style={{ color: accentColor }}>Available for work</span>
               </div>
             </div>
 
@@ -162,10 +183,10 @@ export default function Hero() {
             </h1>
 
             <div className="mt-6 flex flex-wrap items-center gap-2 opacity-0 animate-slide-up" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-              <span className="font-pixel text-sm bg-crimson-DEFAULT/20 border-2 border-crimson-400 text-crimson-300 px-3 py-1.5 rounded-sm">
+              <span className="font-pixel text-sm bg-red-500/10 border-2 border-red-500/40 text-red-400 px-3 py-1.5 rounded-sm">
                 👾 Full Stack Developer
               </span>
-              <span className="font-pixel text-sm bg-blue-500/20 border-2 border-blue-400 text-blue-300 px-3 py-1.5 rounded-sm">
+              <span className="font-pixel text-sm bg-blue-500/10 border-2 border-blue-400 text-blue-300 px-3 py-1.5 rounded-sm">
                 ✦ Creative Coder
               </span>
             </div>
@@ -177,7 +198,7 @@ export default function Hero() {
               <span className="text-xl sm:text-2xl font-semibold text-neutral-200">
                 {displayed}
               </span>
-              <span className="w-0.5 h-6 bg-crimson-DEFAULT animate-pulse" />
+              <span className="w-0.5 h-6 animate-pulse" style={{ backgroundColor: accentColor }} />
             </div>
 
             <p
@@ -189,60 +210,43 @@ export default function Hero() {
             </p>
 
             <div
-              className="flex flex-wrap gap-3 opacity-0 animate-slide-up"
+              className="flex flex-wrap gap-4 opacity-0 animate-slide-up"
               style={{ animationDelay: '750ms', animationFillMode: 'forwards' }}
             >
               <button
                 onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-                className="btn-primary flex items-center gap-2"
+                className="pixel-btn-retro flex items-center gap-2 px-5 py-2.5 bg-crimson-DEFAULT text-white text-[10px] uppercase tracking-wider"
               >
-                <Folder size={16} />
+                <Folder size={14} />
                 View Projects
               </button>
               <button
-                onClick={() => setContactOpen(true)}
-                className="btn-secondary flex items-center gap-2"
-              >
-                <Mail size={16} />
-                Socials
-              </button>
-              <button
                 onClick={() => window.open('/documents/Ciceron,_Keith_Czimonne_Anderson_RESUME_(3).pdf', '_blank')}
-                className="btn-secondary flex items-center gap-2"
+                className="pixel-btn-retro flex items-center gap-2 px-5 py-2.5 bg-neutral-900 text-white text-[10px] uppercase tracking-wider"
               >
-                <FileText size={16} />
+                <FileText size={14} />
                 View Resume
               </button>
             </div>
 
             <div
-              className="flex items-center gap-4 opacity-0 animate-slide-up"
+              className="flex flex-col gap-4 opacity-0 animate-slide-up mt-8 items-start w-full"
               style={{ animationDelay: '900ms', animationFillMode: 'forwards' }}
             >
-              <span className="text-neutral-500 text-sm">Find me on</span>
-              <div className="flex gap-3">
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 glass rounded-lg flex items-center justify-center text-neutral-400 hover:text-white hover:border-crimson-DEFAULT/50 hover:glow-red-sm transition-all duration-300 group"
-                >
-                  <Github size={18} />
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 glass rounded-lg flex items-center justify-center text-neutral-400 hover:text-white hover:border-crimson-DEFAULT/50 hover:glow-red-sm transition-all duration-300"
-                >
-                  <Linkedin size={18} />
-                </a>
-                <a
-                  href="mailto:ciceronkeith4@gmail.com"
-                  className="w-10 h-10 glass rounded-lg flex items-center justify-center text-neutral-400 hover:text-white hover:border-crimson-DEFAULT/50 hover:glow-red-sm transition-all duration-300"
-                >
-                  <Mail size={18} />
-                </a>
+              <span className="text-neutral-500 text-[10px] font-pixel uppercase tracking-widest text-left">Find me on</span>
+              <div className="flex flex-wrap gap-4 mt-2">
+                {socialOutlets.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-12 h-12 flex items-center justify-center border-2 border-white/10 bg-neutral-900/60 hover:bg-neutral-900 hover:scale-110 active:scale-95 transition-all ${social.borderHover}`}
+                    title={social.name}
+                  >
+                    <social.icon className="w-5 h-5 flex-shrink-0" />
+                  </a>
+                ))}
               </div>
             </div>
           </div>
@@ -254,38 +258,38 @@ export default function Hero() {
           >
             <div className="relative">
               {/* Outer glow ring */}
-              <div className="absolute -inset-4 rounded-3xl bg-crimson-gradient opacity-15 blur-xl animate-pulse-glow" />
+              <div className="absolute -inset-4 opacity-15 blur-xl animate-pulse-glow" style={{ backgroundColor: accentColor, borderRadius: '0px' }} />
 
               {/* Card */}
-              <div className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-3xl overflow-hidden glass-strong border border-white/10 animate-float group">
+              <div className="relative w-64 h-72 sm:w-80 sm:h-96 max-w-full overflow-hidden glass-strong border-2 border-white/10 animate-float group" style={{ borderRadius: '0px' }}>
                 <img
                   src={PROFILE_IMAGE}
                   alt="Keith Czimonne Anderson Ciceron"
                   className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
                 {/* Bottom label */}
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <div className="glass rounded-xl px-4 py-3">
-                    <p className="text-white font-semibold text-sm">Keith Ciceron</p>
-                    <p className="text-crimson-400 text-xs mt-0.5">Full Stack Developer</p>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <div className="glass px-3 py-2.5 border-2 border-white/10" style={{ borderRadius: '0px' }}>
+                    <p className="text-white font-semibold text-[10px] leading-snug">Keith Ciceron</p>
+                    <p className="text-[7px] mt-1" style={{ color: accentColor }}>Full Stack Developer</p>
                   </div>
                 </div>
               </div>
 
               {/* Floating badge — experience */}
-              <div className="absolute -top-3 -right-3 glass rounded-2xl px-4 py-3 border border-white/10 animate-float" style={{ animationDelay: '1s' }}>
-                <p className="text-white font-bold text-xl leading-none">BSIT</p>
-                <p className="text-neutral-400 text-xs mt-0.5">Student</p>
+              <div className="absolute -top-4 -right-4 glass p-2.5 border-2 border-white/10 animate-float z-20 text-left min-w-[75px]" style={{ animationDelay: '1s', borderRadius: '0px' }}>
+                <p className="text-white font-bold text-[9px] md:text-[10px] leading-none">BSIT</p>
+                <p className="text-neutral-400 text-[6.5px] md:text-[7px] mt-1.5 leading-none">Student</p>
               </div>
 
               {/* Floating badge — status */}
-              <div className="absolute -bottom-3 -left-3 glass rounded-2xl px-4 py-3 border border-crimson-DEFAULT/30 animate-float" style={{ animationDelay: '2s' }}>
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  <p className="text-white text-xs font-medium">Open to opportunities</p>
+              <div className="absolute -bottom-4 -left-4 glass p-2.5 border-2 animate-float z-20" style={{ animationDelay: '2s', borderColor: accentColor + '4D', borderRadius: '0px' }}>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-green-400 animate-pulse flex-shrink-0" style={{ borderRadius: '0px' }} />
+                  <p className="text-white text-[6.5px] md:text-[7px] font-medium leading-none">Open to opportunities</p>
                 </div>
               </div>
             </div>
