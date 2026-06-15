@@ -19,7 +19,6 @@
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
-    cursor: var(--mario-star-cursor), auto !important;
   }
 
   body {
@@ -30,11 +29,6 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    cursor: var(--mario-star-cursor), auto !important;
-  }
-
-  a, button, [role="button"], input, textarea, select, .cursor-pointer, [type="submit"], [type="button"], label, summary {
-    cursor: var(--mario-star-hover), auto !important;
   }
 
   /* Add smooth transition to interactive elements */
@@ -266,6 +260,15 @@
 
   .float-pixel {
     animation: float-pixel 3s ease-in-out infinite;
+  }
+
+  /* Scrollbar none utility */
+  .scrollbar-none {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
   }
 }
 

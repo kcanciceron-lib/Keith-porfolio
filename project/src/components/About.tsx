@@ -1,4 +1,4 @@
-import { Code2, Palette, TestTube, Lightbulb, Camera, Video } from 'lucide-react';
+import { Code2, Palette, TestTube, Lightbulb, Camera, Video, Award, Heart, Zap } from 'lucide-react';
 import { ScrollReveal } from './ScrollReveal';
 
 const highlights = [
@@ -10,11 +10,19 @@ const highlights = [
   { icon: Video, label: 'Video Editing', desc: 'Content creation' },
 ];
 
-const stats = [
-  { value: 'Intern', label: 'Currently' },
-  { value: '2027', label: 'Graduation' },
-  { value: '2', label: 'Projects Built' },
-  { value: 'Full Stack', label: 'Focus Area' },
+const attributes = [
+  { label: 'STR (Strength)', value: '88', desc: 'Database Design & Backend APIs' },
+  { label: 'AGI (Agility)', value: '92', desc: 'Fast Interface Load Times & Easing' },
+  { label: 'INT (Intellect)', value: '95', desc: 'Algorithm Design & QA Diagnostics' },
+  { label: 'VIT (Vitality)', value: '85', desc: 'Code Maintainability & Clean Docs' }
+];
+
+const skillBars = [
+  { name: 'FRONTEND DEVELOPMENT', percent: 90, color: 'bg-emerald-500' },
+  { name: 'BACKEND SERVICES & APIs', percent: 30, color: 'bg-blue-500' },
+  { name: 'DATABASE & ARCHITECTURE', percent: 20, color: 'bg-yellow-500' },
+  { name: 'UI/UX & WIREFRAMING', percent: 75, color: 'bg-pink-500' },
+  { name: 'QA TESTING & DEBUGGING', percent: 40, color: 'bg-cyan-500' },
 ];
 
 export default function About() {
@@ -26,7 +34,7 @@ export default function About() {
 
       <div className="container-max">
         {/* Header */}
-        <ScrollReveal className="text-center mb-10">
+        <ScrollReveal className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-8 bg-crimson-DEFAULT" />
             <span className="text-crimson-400 text-sm font-medium tracking-widest uppercase">About Me</span>
@@ -37,61 +45,133 @@ export default function About() {
           </h2>
         </ScrollReveal>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Left — Bio */}
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* Left — RPG Character Sheet Panel */}
           <ScrollReveal direction="left">
-            <div className="glass rounded-2xl p-8 border border-white/8 mb-6">
-              <div className="inline-flex items-center gap-2 bg-crimson-DEFAULT/10 border-2 border-crimson-400 rounded-sm px-3 py-1.5 mb-4">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-crimson-400 text-xs font-pixel font-semibold">⚡ 3rd Year BSIT • 2027</span>
-              </div>
-              <p className="text-neutral-300 text-base leading-relaxed mb-5">
-                Hi, I'm <span className="text-white font-semibold">Keith Czimonne Anderson Ciceron</span> — a 3rd Year BS Information Technology student at{' '}
-                <span className="text-crimson-400 font-medium">San Sebastian College Recoletos-Manila</span> with a passion for building intuitive digital experiences through design and development.
-              </p>
-              <p className="text-neutral-400 text-base leading-relaxed mb-5">
-                My background combines full stack development, UI/UX design, QA testing, product thinking, and creative direction. I enjoy turning ideas into functional and visually engaging systems that solve real-world problems.
-              </p>
-              <p className="text-neutral-400 text-base leading-relaxed">
-                I'm constantly learning, building, and pushing myself toward creating impactful technology that is both technically strong and enjoyable to use. With graduation coming in 2027, I'm excited to bring my skills to industry-level projects.
-              </p>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {stats.map((stat) => (
-                <div key={stat.label} className="glass p-4 border border-white/8 flex flex-col justify-between items-center gap-2.5 text-center hover:border-crimson-DEFAULT/30 transition-all duration-300 group min-h-[90px]" style={{ borderRadius: '0px' }}>
-                  <p className="text-[9px] md:text-[10px] font-bold text-white group-hover:text-crimson-400 transition-colors duration-300 leading-normal uppercase break-words w-full">{stat.value}</p>
-                  <p className="text-neutral-500 text-[7px] tracking-wider uppercase leading-snug">{stat.label}</p>
+            <div className="glass p-6 border-2 border-white/10 relative overflow-hidden space-y-6 text-left" style={{ borderRadius: '0px', boxShadow: '4px 4px 0px rgba(0,0,0,0.5)' }}>
+              {/* Scanline CRT overlay */}
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-[0.015] z-20"
+                style={{
+                  backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                  backgroundSize: '100% 4px, 6px 100%'
+                }}
+              />
+              
+              {/* Character Sheet Title Header */}
+              <div className="border-b-2 border-white/10 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <div>
+                  <h3 className="text-white text-xs md:text-sm font-bold tracking-widest flex items-center gap-1.5">
+                    🛡️ PROFILE SHEET: KEITH.DEV
+                  </h3>
+                  <p className="text-[7.5px] text-neutral-400 mt-1 uppercase tracking-wider">Class: Full Stack Developer / Builder / Creator</p>
                 </div>
-              ))}
+                <div className="flex items-center gap-2 border-2 border-crimson-500 bg-crimson-DEFAULT/10 px-2.5 py-1" style={{ borderRadius: '0px' }}>
+                  <Award size={12} className="text-crimson-400" />
+                  <span className="text-crimson-400 font-bold text-[8.5px] uppercase tracking-wider">LEVEL 22</span>
+                </div>
+              </div>
+
+              {/* Status Bars (HP & MP) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* HP Bar */}
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center text-[7px] tracking-wider text-neutral-400 uppercase">
+                    <span className="flex items-center gap-1"><Heart size={8} className="text-red-500 fill-red-500" /> HP (Energy)</span>
+                    <span className="text-white">100/100</span>
+                  </div>
+                  <div className="border-2 border-white/10 p-0.5" style={{ borderRadius: '0px' }}>
+                    <div className="h-2 bg-red-600 w-full" />
+                  </div>
+                </div>
+
+                {/* MP Bar */}
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center text-[7px] tracking-wider text-neutral-400 uppercase">
+                    <span className="flex items-center gap-1"><Zap size={8} className="text-cyan-400 fill-cyan-400" /> MP (Creativity)</span>
+                    <span className="text-white">99/99</span>
+                  </div>
+                  <div className="border-2 border-white/10 p-0.5" style={{ borderRadius: '0px' }}>
+                    <div className="h-2 bg-cyan-500 w-[95%]" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Core Attributes Matrix */}
+              <div className="space-y-2.5">
+                <h4 className="text-[8px] text-neutral-400 uppercase tracking-widest font-bold font-pixel">Core Attributes:</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {attributes.map((attr) => (
+                    <div key={attr.label} className="border border-white/5 bg-neutral-900/40 p-2.5 animate-pulse-slow" style={{ borderRadius: '0px' }}>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-white font-bold text-[8px] tracking-wider uppercase">{attr.label}</span>
+                        <span className="text-crimson-400 font-bold text-[9px]">{attr.value}</span>
+                      </div>
+                      <p className="text-neutral-500 text-[6.5px] leading-relaxed uppercase tracking-wider">{attr.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Short Bio Block */}
+              <div className="border-t border-white/10 pt-4 text-[8px] sm:text-[9px] text-neutral-400 leading-relaxed space-y-3">
+                <p>
+                  Hi, I'm <span className="text-white font-semibold">Keith Czimonne Anderson Ciceron</span> — a 3rd Year BSIT student at <span className="text-crimson-400 font-medium">San Sebastian College Recoletos-Manila</span>. With graduation targeted for 2027, I specialize in combining robust full-stack engineering with creative design layers.
+                </p>
+                <p>
+                  My mission is to build scalable backend architectures and visually spectacular user interfaces that make software memorable, unique, and professional.
+                </p>
+              </div>
             </div>
           </ScrollReveal>
 
-          {/* Right — Skill highlights */}
-          <ScrollReveal direction="right">
-            <h3 className="text-lg font-semibold text-white mb-6">What I bring to the table</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {highlights.map((item, i) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.label}
-                    className="glass rounded-xl p-5 border border-white/8 hover:border-crimson-DEFAULT/30 transition-all duration-300 group cursor-default"
-                    style={{ transitionDelay: `${i * 50}ms` }}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-crimson-DEFAULT/10 flex items-center justify-center flex-shrink-0 group-hover:bg-crimson-DEFAULT/20 transition-colors duration-300">
-                        <Icon size={18} className="text-crimson-400" />
-                      </div>
-                      <div>
-                        <p className="text-white font-medium text-sm">{item.label}</p>
-                        <p className="text-neutral-500 text-xs mt-0.5">{item.desc}</p>
-                      </div>
+          {/* Right — Skills Inventory & Inventory Grid */}
+          <ScrollReveal direction="right" className="space-y-8">
+            {/* Skills Inventory */}
+            <div className="glass p-6 border-2 border-white/10 space-y-4" style={{ borderRadius: '0px', boxShadow: '4px 4px 0px rgba(0,0,0,0.5)' }}>
+              <h3 className="text-white text-xs md:text-sm font-bold tracking-widest text-left border-b border-white/10 pb-2 mb-3 font-pixel">
+                🎒 SKILLS INVENTORY
+              </h3>
+              <div className="space-y-4">
+                {skillBars.map((skill) => (
+                  <div key={skill.name} className="space-y-1 text-left">
+                    <div className="flex justify-between text-[7px] tracking-wider uppercase text-neutral-400 font-pixel">
+                      <span>{skill.name}</span>
+                      <span className="text-white font-bold">{skill.percent}%</span>
+                    </div>
+                    <div className="border-2 border-white/10 p-0.5" style={{ borderRadius: '0px' }}>
+                      <div className={`h-2 ${skill.color} transition-all duration-500`} style={{ width: `${skill.percent}%` }} />
                     </div>
                   </div>
-                );
-              })}
+                ))}
+              </div>
+            </div>
+
+            {/* RPG Specializations Items Box */}
+            <div className="glass p-6 border-2 border-white/10 space-y-4" style={{ borderRadius: '0px', boxShadow: '4px 4px 0px rgba(0,0,0,0.5)' }}>
+              <h3 className="text-white text-xs md:text-sm font-bold tracking-widest text-left border-b border-white/10 pb-2 mb-4 font-pixel">
+                📦 SPECIALIZATION ACCESSORIES
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {highlights.map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.label}
+                      className="border border-white/10 bg-neutral-900/40 p-3 hover:border-crimson-DEFAULT/30 transition-all duration-300 group cursor-default text-left flex items-start gap-3 animate-float"
+                      style={{ animationDelay: `${i * 300}ms`, borderRadius: '0px' }}
+                    >
+                      <div className="w-8 h-8 bg-crimson-DEFAULT/10 border border-crimson-400/55 flex items-center justify-center flex-shrink-0 group-hover:bg-crimson-DEFAULT/20 transition-colors duration-300" style={{ borderRadius: '0px' }}>
+                        <Icon size={14} className="text-crimson-400" />
+                      </div>
+                      <div>
+                        <p className="text-white font-medium text-[8px] sm:text-[9px] uppercase tracking-wider">{item.label}</p>
+                        <p className="text-neutral-500 text-[6.5px] mt-0.5 uppercase leading-normal tracking-wide">{item.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </ScrollReveal>
         </div>

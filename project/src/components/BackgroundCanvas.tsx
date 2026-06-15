@@ -85,26 +85,40 @@ export default function BackgroundCanvas() {
     const stars: { x: number; y: number; size: number; speed: number; opacity: number; color: string }[] = [];
     const initStars = () => {
       stars.length = 0;
-      const count = mode === 'space' ? 300 : 80;
+      const count = mode === 'space' ? 260 : 70;
       for (let i = 0; i < count; i++) {
         stars.push({
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
           size: Math.random() * 1.5 + 0.5,
-          speed: mode === 'space' ? Math.random() * 0.4 + 0.05 : 0.03,
+          speed: mode === 'space' ? Math.random() * 0.4 + 0.05 : 0.02,
           opacity: Math.random(),
-          color: Math.random() > 0.8 ? (mode === 'space' ? '#fecaca' : '#bfdbfe') : '#ffffff',
+          color: Math.random() > 0.75 ? (mode === 'space' ? '#fecaca' : '#bfdbfe') : '#ffffff',
         });
       }
     };
 
     // Meteor data
-    const meteors: { x: number; y: number; length: number; speed: number; angle: number; opacity: number }[] = [];
-    const createMeteor = () => {
+    interface Meteor {
+      x: number;
+      y: number;
+      length: number;
+      speed: number;
+      angle: number;
+      opacity: number;
+      type: 'normal' | 'streak' | 'large';
+      width: number;
+      colorStart: string;
+      colorEnd: string;
+    }
+    const meteors: Meteor[] = [];
+    let meteorShowerTimer = 0;
+
+    const createMeteor = (forcedType?: 'normal' | 'streak' | 'large') => {
       if (mode !== 'space') return;
       const edge = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
       let x = 0, y = 0, angle = 0;
-      const pad = 50;
+      const pad = 80;
       
       if (edge === 0) { // Spawn top, travel down
         x = Math.random() * window.innerWidth;
@@ -124,14 +138,79 @@ export default function BackgroundCanvas() {
         angle = -Math.PI / 4 + Math.random() * (Math.PI / 2); // -45 to 45 deg
       }
 
+      const rand = Math.random();
+      const type = forcedType || (rand < 0.1 ? 'streak' : rand < 0.2 ? 'large' : 'normal');
+
+      let length = Math.random() * 80 + 45;
+      let speed = Math.random() * 12 + 10;
+      let width = 1.8;
+      let opacity = 0.9;
+      let colorStart = 'rgba(255, 255, 255, ';
+      let colorEnd = 'rgba(255, 255, 255, 0)';
+
+      if (type === 'streak') {
+        length = Math.random() * 100 + 160;
+        speed = Math.random() * 8 + 26; // High speed cosmic streaks
+        width = 1.0;
+        opacity = 0.95;
+        const colorOpt = Math.random() > 0.5 ? '0, 240, 255' : '255, 0, 127'; // cyan vs neon pink
+        colorStart = `rgba(${colorOpt}, `;
+      } else if (type === 'large') {
+        length = Math.random() * 40 + 80;
+        speed = Math.random() * 2 + 4.5; // Rare slow large meteors
+        width = 4.0;
+        opacity = 0.85;
+        colorStart = 'rgba(251, 113, 133, '; // rose/coral glowing trail
+      }
+
       meteors.push({
         x,
         y,
-        length: Math.random() * 80 + 45,
-        speed: Math.random() * 12 + 10,
+        length,
+        speed,
         angle,
-        opacity: 0.9,
+        opacity,
+        type,
+        width,
+        colorStart,
+        colorEnd
       });
+    };
+
+    // Plain Mode animated code symbols data
+    const symbolsList = ['</>', '{ }', '[]', '=>', 'let', 'const', 'var', 'async', 'await', '===', 'npm', 'git'];
+    const codeSymbols: { x: number; y: number; text: string; speed: number; size: number; opacity: number }[] = [];
+    const initCodeSymbols = () => {
+      codeSymbols.length = 0;
+      if (mode === 'space') return;
+      const count = 12;
+      for (let i = 0; i < count; i++) {
+        codeSymbols.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          text: symbolsList[Math.floor(Math.random() * symbolsList.length)],
+          speed: Math.random() * 0.25 + 0.12,
+          size: Math.random() * 2 + 7.5, // 7.5px to 9.5px
+          opacity: Math.random() * 0.2 + 0.1,
+        });
+      }
+    };
+
+    // Plain Mode floating red pixel sparkles
+    const plainSparkles: { x: number; y: number; speed: number; size: number; opacity: number }[] = [];
+    const initPlainSparkles = () => {
+      plainSparkles.length = 0;
+      if (mode === 'space') return;
+      const count = 20;
+      for (let i = 0; i < count; i++) {
+        plainSparkles.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          speed: Math.random() * 0.12 + 0.05,
+          size: Math.random() * 1.5 + 1.5,
+          opacity: Math.random() * 0.35 + 0.08,
+        });
+      }
     };
 
     // Floating Pixel Art Assets data
@@ -171,7 +250,7 @@ export default function BackgroundCanvas() {
         bobAmp: 12
       });
 
-      // Cruising Spaceship (moving horizontally)
+      // Cruising Spaceship
       assets.push({
         x: window.innerWidth * 0.05,
         y: window.innerHeight * 0.45,
@@ -219,7 +298,7 @@ export default function BackgroundCanvas() {
         bobAmp: 15
       });
 
-      // Tumbling Meteor 1 (rotating)
+      // Tumbling Meteor 1
       assets.push({
         x: window.innerWidth * 0.55,
         y: window.innerHeight * 0.5,
@@ -282,21 +361,54 @@ export default function BackgroundCanvas() {
 
     initStars();
     initAssets();
+    initCodeSymbols();
+    initPlainSparkles();
 
     const animate = (time: number) => {
-      // Background clear / overlay
+      // Clear canvas
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
       if (mode === 'space') {
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        // Draw a semi-transparent purple/dark overlay to let the galaxy gif show through beautifully
+        // Draw deep space purple/dark radial gradients (Nebula Glows)
+        const neb1 = ctx.createRadialGradient(window.innerWidth * 0.2, window.innerHeight * 0.3, 0, window.innerWidth * 0.2, window.innerHeight * 0.3, 360);
+        neb1.addColorStop(0, 'rgba(123, 0, 255, 0.07)');
+        neb1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = neb1;
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+        const neb2 = ctx.createRadialGradient(window.innerWidth * 0.85, window.innerHeight * 0.65, 0, window.innerWidth * 0.85, window.innerHeight * 0.65, 300);
+        neb2.addColorStop(0, 'rgba(0, 240, 255, 0.05)');
+        neb2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = neb2;
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+        // Semi-transparent canvas cover overlay
         ctx.fillStyle = 'rgba(13, 2, 28, 0.45)';
         ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
       } else {
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        // Plain Mode gradient background
         const grad = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
         grad.addColorStop(0, '#0a0a0a');
         grad.addColorStop(1, '#050505');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+        // Subtle tech grid pattern
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+        ctx.lineWidth = 1;
+        const gridSize = 45;
+        for (let x = 0; x < window.innerWidth; x += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, window.innerHeight);
+          ctx.stroke();
+        }
+        for (let y = 0; y < window.innerHeight; y += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(window.innerWidth, y);
+          ctx.stroke();
+        }
       }
 
       // Drawing stars
@@ -325,22 +437,35 @@ export default function BackgroundCanvas() {
       });
       ctx.globalAlpha = 1.0;
 
-      // Drawing meteors (Meteor Showers)
+      // Handle space specific systems
       if (mode === 'space') {
-        if (Math.random() < 0.02) createMeteor(); // Symmetrical & dynamic frequency
+        // Random meteor shower triggers
+        if (Math.random() < 0.0015 && meteorShowerTimer <= 0) {
+          meteorShowerTimer = 150 + Math.floor(Math.random() * 150); // duration in frames
+        }
 
+        if (meteorShowerTimer > 0) {
+          meteorShowerTimer--;
+          if (Math.random() < 0.35) createMeteor('normal'); // higher density wave
+        }
+
+        // Regular spawning
+        if (Math.random() < 0.018) {
+          createMeteor();
+        }
+
+        // Drawing meteors (Meteor Showers / Cosmic Streaks / Large Meteors)
         for (let i = meteors.length - 1; i >= 0; i--) {
           const m = meteors[i];
-          // Drag tail behind the head (subtract cos/sin)
           const endX = m.x - Math.cos(m.angle) * m.length;
           const endY = m.y - Math.sin(m.angle) * m.length;
 
           const meteorGrad = ctx.createLinearGradient(m.x, m.y, endX, endY);
-          meteorGrad.addColorStop(0, `rgba(255, 255, 255, ${m.opacity})`);
-          meteorGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          meteorGrad.addColorStop(0, m.colorStart + `${m.opacity})`);
+          meteorGrad.addColorStop(1, m.colorEnd);
 
           ctx.strokeStyle = meteorGrad;
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = m.width;
           ctx.beginPath();
           ctx.moveTo(m.x, m.y);
           ctx.lineTo(endX, endY);
@@ -348,29 +473,30 @@ export default function BackgroundCanvas() {
 
           m.x += Math.cos(m.angle) * m.speed;
           m.y += Math.sin(m.angle) * m.speed;
-          m.opacity -= 0.007;
+          
+          // Speed changes trail fade rate
+          const fadeRate = m.type === 'streak' ? 0.009 : m.type === 'large' ? 0.004 : 0.007;
+          m.opacity -= fadeRate;
 
-          // Universal bounds check for multi-directional motion
+          // Bounds check
           if (m.opacity <= 0 || 
-              m.x < -150 || 
-              m.x > window.innerWidth + 150 || 
-              m.y < -150 || 
-              m.y > window.innerHeight + 150) {
+              m.x < -200 || 
+              m.x > window.innerWidth + 200 || 
+              m.y < -200 || 
+              m.y > window.innerHeight + 200) {
             meteors.splice(i, 1);
           }
         }
 
-        // Animating and drawing floating pixel assets
+        // Draw floating space assets
         assets.forEach((asset) => {
           asset.x += asset.vx;
           asset.y += asset.vy;
           asset.angle += asset.rotSpeed;
           asset.phase += asset.bobSpeed;
 
-          // Bobbing calculation
           const displayY = asset.y + Math.sin(asset.phase) * asset.bobAmp;
 
-          // Screen wraparound
           const margin = 120;
           if (asset.x < -margin) asset.x = window.innerWidth + margin;
           if (asset.x > window.innerWidth + margin) asset.x = -margin;
@@ -379,6 +505,34 @@ export default function BackgroundCanvas() {
 
           drawMatrix(ctx, asset.matrix, asset.x, displayY, asset.pixelSize, asset.colorMap, asset.angle);
         });
+      } else {
+        // Upgraded Plain Mode: code symbol particles & red sparkles
+        codeSymbols.forEach((sym) => {
+          ctx.fillStyle = '#ffffff';
+          ctx.globalAlpha = sym.opacity * (0.4 + Math.sin(time / 600 + sym.x) * 0.3);
+          ctx.font = `${sym.size}px monospace`;
+          ctx.fillText(sym.text, sym.x, sym.y);
+
+          sym.y += sym.speed;
+          if (sym.y > window.innerHeight + 20) {
+            sym.y = -20;
+            sym.x = Math.random() * window.innerWidth;
+            sym.text = symbolsList[Math.floor(Math.random() * symbolsList.length)];
+          }
+        });
+
+        plainSparkles.forEach((p) => {
+          ctx.fillStyle = '#c41230'; // red sparkles matching Keith's branding
+          ctx.globalAlpha = p.opacity * (0.6 + Math.sin(time / 450 + p.x) * 0.4);
+          ctx.fillRect(Math.floor(p.x), Math.floor(p.y), Math.ceil(p.size), Math.ceil(p.size));
+
+          p.y -= p.speed; // float upward
+          if (p.y < -10) {
+            p.y = window.innerHeight + 10;
+            p.x = Math.random() * window.innerWidth;
+          }
+        });
+        ctx.globalAlpha = 1.0;
       }
 
       rafId = requestAnimationFrame(animate);

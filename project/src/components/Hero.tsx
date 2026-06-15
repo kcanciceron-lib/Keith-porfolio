@@ -27,13 +27,92 @@ const PROFILE_IMAGE = '/images/me.jpg';
 const roles = ['Full Stack Developer', 'UI/UX Designer', 'Web Developer', 'Problem Solver'];
 
 export default function Hero() {
-  const { accentColor } = useTheme();
+  const { accentColor, setMode, mode } = useTheme();
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
   const particlesRef = useRef<HTMLCanvasElement>(null);
+
+  // Terminal state hooks
+  const [terminalHistory, setTerminalHistory] = useState<string[]>([
+    'SYSTEM BOOT SUCCESSFUL...',
+    'CONNECTING TO KEITH-DB...',
+    'ESTABLISHED SECURE LINK.',
+    'TYPE "help" FOR AVAILABLE COMMANDS.'
+  ]);
+  const [terminalInput, setTerminalInput] = useState('');
+  const terminalBottomRef = useRef<HTMLDivElement | null>(null);
+
+  const handleTerminalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cmd = terminalInput.trim().toLowerCase();
+    if (!cmd) return;
+
+    let response: string[] = [];
+    if (cmd === 'help') {
+      response = [
+        `> ${terminalInput}`,
+        'AVAILABLE COMMANDS:',
+        ' - skills: Display developer skills stack',
+        ' - contact: Display email and phone contact',
+        ' - ojt: Display San Sebastian OJT details',
+        ' - space: Toggle Space Mode galaxy theme',
+        ' - clear: Clear the console terminal logs'
+      ];
+    } else if (cmd === 'skills') {
+      response = [
+        `> ${terminalInput}`,
+        'TECH STACK CORE:',
+        ' [FRONTEND] React, TypeScript, TailwindCSS',
+        ' [BACKEND] Node.js, Express, REST APIs',
+        ' [DATABASE] MySQL, PostgreSQL, Supabase'
+      ];
+    } else if (cmd === 'contact') {
+      response = [
+        `> ${terminalInput}`,
+        'CONTACT CHANNELS:',
+        ' EMAIL: ciceronkeith4@gmail.com',
+        ' TEL: +639682544293',
+        ' REGION: Manila, Philippines'
+      ];
+    } else if (cmd === 'ojt') {
+      response = [
+        `> ${terminalInput}`,
+        'OJT MILESTONES:',
+        ' - Satisfaction Survey Outreach portal developer',
+        ' - Frontend styling & layout symmetry adjustments',
+        ' - Interactive component integration & testing'
+      ];
+    } else if (cmd === 'space') {
+      const nextMode = mode === 'space' ? 'plain' : 'space';
+      response = [
+        `> ${terminalInput}`,
+        `TOGGLING SPACE MODE -> ${nextMode.toUpperCase()}...`,
+      ];
+      setTimeout(() => {
+        setMode(nextMode);
+      }, 400);
+    } else if (cmd === 'clear') {
+      setTerminalHistory([]);
+      setTerminalInput('');
+      return;
+    } else {
+      response = [
+        `> ${terminalInput}`,
+        `bash: command not found: ${cmd}`,
+        'Type "help" for a list of valid options.'
+      ];
+    }
+
+    setTerminalHistory(prev => [...prev, ...response]);
+    setTerminalInput('');
+  };
+
+  useEffect(() => {
+    terminalBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [terminalHistory]);
 
   // Typewriter
   useEffect(() => {
@@ -227,6 +306,42 @@ export default function Hero() {
                 <FileText size={14} />
                 View Resume
               </button>
+            </div>
+
+            {/* Interactive Retro Terminal */}
+            <div
+              className="w-full max-w-md border-2 border-white/10 bg-neutral-950/90 p-3 mt-4 opacity-0 animate-slide-up select-text font-mono relative overflow-hidden"
+              style={{ animationDelay: '820ms', animationFillMode: 'forwards', borderRadius: '0px', boxShadow: '4px 4px 0px rgba(0,0,0,0.5)' }}
+            >
+              {/* Scanline CRT overlay */}
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-[0.02] z-20"
+                style={{
+                  backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                  backgroundSize: '100% 4px, 6px 100%'
+                }}
+              />
+              <div className="flex justify-between items-center border-b border-white/10 pb-1.5 mb-2 text-[8px] text-neutral-500 font-bold">
+                <span>📟 KEITH-OS terminal v1.0.4</span>
+                <span className="animate-pulse text-green-400">● ONLINE</span>
+              </div>
+              <div className="h-28 overflow-y-auto pr-1 text-left space-y-1 scrollbar-thin text-green-400 text-[8px] sm:text-[9px] leading-snug">
+                {terminalHistory.map((line, idx) => (
+                  <div key={idx} className="whitespace-pre-wrap">{line}</div>
+                ))}
+                <div ref={terminalBottomRef} />
+              </div>
+              <form onSubmit={handleTerminalSubmit} className="mt-2 pt-2 border-t border-white/10 flex items-center gap-1.5 text-left text-green-400 text-[8px] sm:text-[9px]">
+                <span className="font-bold flex-shrink-0 text-green-600">keith@dev:~$</span>
+                <input
+                  type="text"
+                  value={terminalInput}
+                  onChange={(e) => setTerminalInput(e.target.value)}
+                  placeholder="Type 'help' for options..."
+                  className="flex-1 bg-transparent border-none outline-none text-green-400 text-[8px] sm:text-[9px] p-0 m-0 w-full placeholder-green-900"
+                  style={{ caretColor: '#22c55e' }}
+                />
+              </form>
             </div>
 
             <div
